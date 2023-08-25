@@ -6,6 +6,8 @@ const app = express();
 
 const port = config.get('port') || 5000;
 
+app.get('/', (req, res) => res.send('Home Page Route'));
+
 const start = async() => {
     try{
         await mongoose.connect(config.get('dbUrl'));
