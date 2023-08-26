@@ -1,18 +1,21 @@
 const express = require('express');
-const mongoose = require('mongoose')
-//const config = require('config');
-
+const mongoose = require('mongoose');
+const authRouter = require('./routes/auth.routes');
 const app = express();
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
 
-//const port = config.get('port') || 5000;
 const port = 5000;
+const url = 'mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.net/?retryWrites=true&w=majority';
 
-app.get('/', (req, res) => res.send('Home Page Route'));
+app.use('/api/auth', jsonParser, authRouter)
+app.get('/', (req, res) => {
+    res.send({message: "Hello"})
+})
 
 const start = async() => {
     try{
-        ///await mongoose.connect(config.get('dbUrl'));
-        await mongoose.connect('mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.net/?retryWrites=true&w=majority');
+        await mongoose.connect(url);
         app.listen(port, () => console.log(`Server running on ${port}, http://localhost:${port}`));
     } catch(e) {
         console.dir(e)
