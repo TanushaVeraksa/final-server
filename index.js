@@ -9,7 +9,7 @@ const port = 5000;
 const url = 'mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.net/?retryWrites=true&w=majority';
 
 app.use('/api/auth', jsonParser, authRouter)
-app.get('/', (req, res) => {
+app.get('/api/auth', (req, res) => {
     res.send({message: "Hello"})
 })
 
