@@ -12,10 +12,12 @@ router.get('/', async (req, res) => {
 })
 
 const validateEmail = (email) => {
-    return email.match(
-      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    );
-};
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
 
 router.post('/registration', async (req, res) => {
     try {
@@ -24,7 +26,7 @@ router.post('/registration', async (req, res) => {
         if(candidate) {
             return res.status(400).json({message: `User with email ${email} already exist`});
         }
-        if(validateEmail(email)) {
+        if(!validateEmail(email)) {
             return res.status(400).json({message: 'Uncorrect email'})
         }
         if(name.length === 0) {
@@ -63,7 +65,8 @@ router.post('/login', async (req, res) => {
             user: {
                 id: user.id,
                 email: user.email,
-                name: user.name
+                name: user.name, 
+                role: user.role
             }
         })
 
