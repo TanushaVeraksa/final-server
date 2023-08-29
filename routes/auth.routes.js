@@ -6,6 +6,19 @@ const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = 'SEKRET_KEY';
 
+const generateJwt = (user) => {
+   const token = jwt.sign({id: user.id}, SECRET_KEY, {expiresIn: '24h'});
+    return {
+        token, 
+        user: {
+            id: user.id,
+            email: user.email,
+            name: user.name, 
+            role: user.role
+        }
+    }
+}
+
 router.get('/', async (req, res) => {
     const candidate = await User.find({})
     res.send(candidate)
@@ -38,7 +51,8 @@ router.post('/registration', async (req, res) => {
         const hashPassword = await bcrypt.hash(password, 2);
         const user = new User({email, name, password: hashPassword});
         await user.save();
-        return res.json({message: 'User was created'});
+        const token = generateJwt(user);
+        return res.json(token);
 
     } catch(e) {
         console.log(e)
@@ -59,21 +73,18 @@ router.post('/login', async (req, res) => {
         if(!isPasswordValid) {
             return res.status(400).json({message: 'Invalid password'});
         }
-        const token = jwt.sign({id: user.id}, SECRET_KEY, {expiresIn: '24h'})
-        return res.json({
-            token, 
-            user: {
-                id: user.id,
-                email: user.email,
-                name: user.name, 
-                role: user.role
-            }
-        })
+        const token = generateJwt(user);
+        return res.json(token);
 
     } catch(e) {
         console.log(e)
         res.send({message: 'Server error'})
     }
+})
+
+router.get('/check', async (req, res) => {
+    const token = generateJwt(req.body);
+    return res.json({token});
 })
 
 module.exports = router;
