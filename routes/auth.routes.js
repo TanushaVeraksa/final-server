@@ -7,16 +7,10 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'SEKRET_KEY';
 
 const generateJwt = (user) => {
-   const token = jwt.sign({id: user.id}, SECRET_KEY, {expiresIn: '24h'});
-    return {
-        token, 
-        user: {
-            id: user.id,
-            email: user.email,
-            name: user.name, 
-            role: user.role
-        }
-    }
+   return jwt.sign(
+    {id: user.id, email: user.email, name: user.name, role: user.role}, 
+    SECRET_KEY, 
+    {expiresIn: '24h'});
 }
 
 router.get('/', async (req, res) => {
@@ -52,7 +46,7 @@ router.post('/registration', async (req, res) => {
         const user = new User({email, name, password: hashPassword});
         await user.save();
         const token = generateJwt(user);
-        return res.json(token);
+        return res.json({token});
 
     } catch(e) {
         console.log(e)
@@ -74,7 +68,7 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({message: 'Invalid password'});
         }
         const token = generateJwt(user);
-        return res.json(token);
+        return res.json({token});
 
     } catch(e) {
         console.log(e)

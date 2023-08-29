@@ -8,7 +8,7 @@ const Comment = new Schema({
     likes: {type: Number, default: 0},
     hours: {type: Number, default: 0},
     release: {type: Number},
-    dateCreation: {type: Date, default: Date.now},
+    dateCreation: {type: String},
     genre: {type: String},
     commentId: [{type: ObjectId, ref: 'Comment'}],
     userId: {type: ObjectId, ref: 'User'}
