@@ -1,9 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const authRouter = require('./routes/auth.routes');
+const checkRouter = require('./routes/check.routes');
+const movieRouter = require('./routes/movie.routes');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const cors = require("cors");
+const authMiddleware = require('./middleware/auth.middleware');
+const checkMiddleware = require('./middleware/check.middleware');
 
 const app = express();
 
@@ -12,7 +16,10 @@ app.use(cors());
 const port = 5000;
 const url = 'mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.net/?retryWrites=true&w=majority';
 
-app.use('/api/auth', jsonParser, authRouter)
+app.use(express.json())
+app.use('/api/auth', jsonParser, authRouter);
+app.use('/api/user',authMiddleware, checkRouter);
+app.use('/api/movie', jsonParser, movieRouter);
 
 const start = async() => {
     try{

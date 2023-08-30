@@ -1,6 +1,6 @@
 const {Schema, model, ObjectId} = require("mongoose");
 
-const Comment = new Schema({
+const Movie = new Schema({
     img: {type: String, required: true},
     title: {type: String, required: true},
     description: {type: String, required: true},
@@ -14,4 +14,4 @@ const Comment = new Schema({
     userId: {type: ObjectId, ref: 'User'}
 })
 
-module.exports = model('Comment', Comment);
+module.exports = model('Movie', Movie);

@@ -76,9 +76,4 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.get('/check', async (req, res) => {
-    const token = generateJwt(req.body);
-    return res.json({token});
-})
-
 module.exports = router;
