@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const authRouter = require('./routes/auth.routes');
 const checkRouter = require('./routes/check.routes');
-const movieRouter = require('./routes/movie.routes');
+const reviewRouter = require('./routes/review.routes');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const cors = require("cors");
@@ -19,7 +19,7 @@ const url = 'mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.
 app.use(express.json())
 app.use('/api/auth', jsonParser, authRouter);
 app.use('/api/user',authMiddleware, checkRouter);
-app.use('/api/movie', jsonParser, movieRouter);
+app.use('/api/review', jsonParser, reviewRouter);
 
 const start = async() => {
     try{
