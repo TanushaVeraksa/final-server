@@ -12,8 +12,17 @@ const generateJwt = (user) => {
 }
 
 router.get('/check', async (req, res) => {
-    const token = generateJwt(req.user.id, req.user.email, req.user.name, req.user.role)
-    return res.json({token})
+    const token = req.headers.authorization.split(' ')[1]
+    if(!token) {
+        res.status(401).json({message: "User not authorized"})
+    }
+    const decode = jwt.verify(token, SECRET_KEY);
+    req.user = decode;
+    if(decode.role !== 'Admin') {
+        return res.status(403).json({access: false})
+    }
+    return res.send({access: true})
 })
+
 
 module.exports = router;

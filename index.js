@@ -18,7 +18,7 @@ const url = 'mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.
 
 app.use(express.json())
 app.use('/api/auth', jsonParser, authRouter);
-app.use('/api/user',authMiddleware, checkRouter);
+app.use('/api/user', authMiddleware, checkRouter);
 app.use('/api/review', jsonParser, reviewRouter);
 
 const start = async() => {
