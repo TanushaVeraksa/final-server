@@ -11,6 +11,7 @@ const Review = new Schema({
     scoreId: [{type: ObjectId, ref: 'Score'}],
     likes: [{type: ObjectId, ref: 'User'}],
     img: {type: String, required: true},
+    publicId: {type: String, required: true},
     dateCreation: {type: String},
     commentId: [{type: ObjectId, ref: 'Comment'}],
     userId: {type: ObjectId, ref: 'User'},
