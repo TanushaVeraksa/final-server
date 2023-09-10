@@ -12,16 +12,17 @@ cloudinary.config({
     api_secret: 'v0wxs4Z44mTGCoG_wlNqwJJTbZA'
   });
 
-const deleteImg = (public_id) => {
-    cloudinary.uploader.destroy(public_id, function(error,result) {
+const deleteImg = (publicId) => {
+    console.log(publicId)
+    cloudinary.uploader.destroy(publicId, function(error,result) {
         console.log(result, error) })
         .then(resp => console.log(resp))
         .catch(_err=> console.log("Something went wrong, please try again later."));
 }
 
 router.post('/destroyImg', async(req, res)=> {
-    const {public_id} = req.body;
-    deleteImg(public_id);
+    const {publicId} = req.body;
+    deleteImg(publicId);
     return res.send('Image was destroyed')
 })
           
@@ -133,7 +134,7 @@ router.post('/rating', async(req, res) => {
     return res.send({message: 'Rating apdated'})
 })
 
-router.get('/personal/:id', async(req, res) => {
+router.get('/:id', async(req, res) => {
     const {group, dateCreation, grade} = req.query;
     const {id} = req.params;
     let reviews;
