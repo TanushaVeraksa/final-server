@@ -4,6 +4,7 @@ const authRouter = require('./routes/auth.routes');
 const checkRouter = require('./routes/check.routes');
 const reviewRouter = require('./routes/review.routes');
 const pieceRouter = require('./routes/piece.routes');
+const personalRouter = require('./routes/personal.routes');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const cors = require("cors");
@@ -22,6 +23,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/user', authMiddleware, checkRouter);
 app.use('/api/review', jsonParser, reviewRouter);
 app.use('/api/piece', jsonParser, pieceRouter);
+app.use('/api/personal', jsonParser, personalRouter);
 
 const start = async() => {
     try{

@@ -13,7 +13,6 @@ cloudinary.config({
   });
 
 const deleteImg = (publicId) => {
-    console.log(publicId)
     cloudinary.uploader.destroy(publicId, function(error,result) {
         console.log(result, error) })
         .then(resp => console.log(resp))
@@ -67,8 +66,6 @@ router.post('/create', async(req, res) => {
 
 router.post('/delete', async(req, res) => {
     const {id} = req.body;
-    // const review = await Review.find({_id: id});
-    // deleteImg(review.publicId)
     await Review.deleteOne({_id: id});
     return res.send({message: 'Review was deleted'})
 })
@@ -132,37 +129,6 @@ router.post('/rating', async(req, res) => {
     const rating = await getRating(reviewId);
     await Review.updateOne({_id: reviewId}, {rating: rating});
     return res.send({message: 'Rating apdated'})
-})
-
-router.get('/:id', async(req, res) => {
-    const {group, dateCreation, grade} = req.query;
-    const {id} = req.params;
-    let reviews;
-    if(!group && !dateCreation && !grade) {
-        reviews = await Review.find({userId: id});
-    }
-    if(!group && !dateCreation && grade) {
-        reviews = await Review.find({userId: id}).sort({grade: grade}); //asc, desc
-    }
-    if(!group && dateCreation && !grade) {
-        reviews = await Review.find({userId: id}).sort({dateCreation: dateCreation}); //asc, desc
-    }
-    if(group && !dateCreation && !grade) {
-        reviews = await Review.find({userId: id, group: group});
-    }
-    if(group && dateCreation && !grade) {
-        reviews = await Review.find({userId: id, group: group}).sort({dateCreation: dateCreation});
-    }
-    if(group && !dateCreation && grade) {
-        reviews = await Review.find({userId: id, group: group}).sort({grade: grade});
-    }
-    if(!group && dateCreation && grade) {
-        reviews = await Review.find({userId: id}).sort({dateCreation: dateCreation, grade: grade});
-    }
-    if(group && dateCreation && grade) {
-        reviews = await Review.find({userId: id, group: group}).sort({dateCreation: dateCreation, grade: grade});
-    }
-    return res.send(reviews)
 })
 
 router.get('/:id', async(req,res) => {
