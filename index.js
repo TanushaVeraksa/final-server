@@ -9,7 +9,7 @@ const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const cors = require("cors");
 const authMiddleware = require('./middleware/auth.middleware');
-const checkMiddleware = require('./middleware/check.middleware');
+const commentRouter = require('./routes/comment.routes');
 
 const app = express();
 
@@ -24,6 +24,7 @@ app.use('/api/user', authMiddleware, checkRouter);
 app.use('/api/review', jsonParser, reviewRouter);
 app.use('/api/piece', jsonParser, pieceRouter);
 app.use('/api/personal', jsonParser, personalRouter);
+app.use('/api/comment', jsonParser, commentRouter);
 
 const start = async() => {
     try{
