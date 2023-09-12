@@ -6,37 +6,10 @@ const events = require('events');
 
 const emitter = new events.EventEmitter();
 
-router.all('/', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    next();
-   });
-
-// router.get('/get-comment', async(req, res) => {
-//     emitter.once('newMessage', (comment)=> {
-//         res.json(comment)
-//     })
-// })
-
-// router.post('/new-comment', async(req, res) => {
-//     const {message, userEmail, reviewId} = req.body;
-//     const comment = new Comment({message: message, userEmail: userEmail, reviewId: reviewId});
-//     await comment.save();
-//     emitter.emit('newMessage', {message: message, userEmail: userEmail, reviewId: reviewId}) 
-//     res.status(200);
-// })
-
-
-
-router.get('/connect', async(req, res) => {
-   res.writeHead(200, {
-    'Connection': 'keep-alive',
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cashe'
-   })
-   emitter.on('newMessage', (message) => {
-    res.write(`data: ${JSON.stringify(message)} \n\n`)
-   })
+router.get('/get-comment', async(req, res) => {
+    emitter.once('newMessage', (comment)=> {
+        res.json(comment)
+    })
 })
 
 router.post('/new-comment', async(req, res) => {
@@ -45,6 +18,7 @@ router.post('/new-comment', async(req, res) => {
     await comment.save();
     emitter.emit('newMessage', {message: message, userEmail: userEmail, reviewId: reviewId}) 
     res.status(200);
+    return res.send({message: message, userEmail: userEmail, reviewId: reviewId})
 })
 
 router.get('/review', async(req, res) => {
