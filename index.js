@@ -13,15 +13,21 @@ const commentRouter = require('./routes/comment.routes');
 
 const app = express();
 
-const corsOptions ={
-    origin:'*', 
-    // credentials:true,            //access-control-allow-credentials:true
-    // optionSuccessStatus:200
-}
-app.use(cors(corsOptions));
+// const corsOptions ={
+//     origin:'*', 
+//     // credentials:true,            //access-control-allow-credentials:true
+//     // optionSuccessStatus:200
+// }
+// app.use(cors(corsOptions));
 
 const port = 5000;
 const url = 'mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.net/?retryWrites=true&w=majority';
+
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 
 app.use(express.json())
 app.use('/api/auth', authRouter);
