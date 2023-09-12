@@ -13,10 +13,10 @@ router.get('/get-comment', async(req, res) => {
 })
 
 router.post('/new-comment', async(req, res) => {
-    const {message, email, reviewId} = req.body;
-    const comment = new Comment({message: message, userEmail: email, reviewId: reviewId});
+    const {message, userEmail, reviewId} = req.body;
+    const comment = new Comment({message: message, userEmail: userEmail, reviewId: reviewId});
     await comment.save();
-    emitter.emit('newMessage', {message: message, userEmail: email, reviewId: reviewId}) 
+    emitter.emit('newMessage', {message: message, userEmail: userEmail, reviewId: reviewId}) 
     res.status(200);
 })
 
