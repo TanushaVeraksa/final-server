@@ -7,6 +7,11 @@ const events = require('events');
 const emitter = new events.EventEmitter();
 
 router.get('/get-comment', async(req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    res.setHeader("Access-Control-Allow-Credentials", "true");
+    res.setHeader("Access-Control-Max-Age", "1800");
+    res.setHeader("Access-Control-Allow-Headers", "content-type");
+    res.setHeader( "Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, PATCH, OPTIONS" ); 
     emitter.once('newMessage', (comment)=> {
         res.json(comment)
     })
