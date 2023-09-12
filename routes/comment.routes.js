@@ -18,7 +18,6 @@ router.post('/new-comment', async(req, res) => {
     await comment.save();
     emitter.emit('newMessage', {message: message, userEmail: userEmail, reviewId: reviewId}) 
     res.status(200);
-    return res.send({message: message, userEmail: userEmail, reviewId: reviewId})
 })
 
 router.get('/review', async(req, res) => {
