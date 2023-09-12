@@ -14,7 +14,7 @@ const commentRouter = require('./routes/comment.routes');
 const app = express();
 
 const corsOptions ={
-    origin:'https://final-client-livid.vercel.app', 
+    origin:'*', 
     // credentials:true,            //access-control-allow-credentials:true
     // optionSuccessStatus:200
 }
