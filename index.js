@@ -13,7 +13,6 @@ const commentRouter = require('./routes/comment.routes');
 
 const app = express();
 
-const cors = require('cors');
 const corsOptions ={
     origin:'https://final-client-livid.vercel.app', 
     credentials:true,            //access-control-allow-credentials:true
