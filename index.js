@@ -13,7 +13,13 @@ const commentRouter = require('./routes/comment.routes');
 
 const app = express();
 
-app.use(cors());
+const cors = require('cors');
+const corsOptions ={
+    origin:'https://final-client-livid.vercel.app', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
 
 const port = 5000;
 const url = 'mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.net/?retryWrites=true&w=majority';
