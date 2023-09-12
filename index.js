@@ -15,8 +15,8 @@ const app = express();
 
 const corsOptions ={
     origin:'https://final-client-livid.vercel.app', 
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200
+    // credentials:true,            //access-control-allow-credentials:true
+    // optionSuccessStatus:200
 }
 app.use(cors(corsOptions));
 
