@@ -24,7 +24,7 @@ app.use('/api/user', authMiddleware, checkRouter);
 app.use('/api/review', jsonParser, reviewRouter);
 app.use('/api/piece', jsonParser, pieceRouter);
 app.use('/api/personal', jsonParser, personalRouter);
-app.use('/api/comment', jsonParser, commentRouter);
+app.use('/api/comment', cors(), commentRouter);
 
 const start = async() => {
     try{
