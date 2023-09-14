@@ -14,6 +14,7 @@ const passport = require('passport');
 const instagramRoutes = require('./routes/instagram.routes');
 const githubRoutes = require('./routes/github.routes');
 const session = require('express-session');
+const proxy = require('http-proxy-middleware');
 
 const app = express();
 
@@ -45,6 +46,12 @@ app.use(
     // Pass to next layer of middleware
     next();
 });
+
+app.use(proxy('/api', {
+    target: 'https://final-client-livid.vercel.app/',
+    logLevel: 'debug',
+    changeOrigin: true
+}));
 
 app.use(
     session({
