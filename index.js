@@ -6,23 +6,43 @@ const reviewRouter = require('./routes/review.routes');
 const pieceRouter = require('./routes/piece.routes');
 const personalRouter = require('./routes/personal.routes');
 const bodyParser = require('body-parser');
-const Comment = require('./models/Comment');
 const jsonParser = bodyParser.json();
 const cors = require("cors");
 const authMiddleware = require('./middleware/auth.middleware');
 const commentRouter = require('./routes/comment.routes');
-const events = require('events');
-
-const emitter = new events.EventEmitter();
+const passport = require('passport');
+const instagramRoutes = require('./routes/instagram.routes');
+const githubRoutes = require('./routes/github.routes');
+const session = require('express-session');
 
 const app = express();
 
-app.use(cors());
+app.use(
+    cors({
+      origin: "*",
+      methods: "GET,POST",
+      allowedHeaders: "Content-Type,Authorization",
+      credentials: true,
+      preflightContinue: true,
+    })
+  );
 
-const corsOptions = {
-    origin: 'https://final-client-livid.vercel.app',
-    optionsSuccessStatus: 200 
-}
+app.use(
+    session({
+      resave: false,
+      saveUninitialized: true,
+      secret: 'secret',
+    })
+  );
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.serializeUser((user, done) => {
+  done(null, user)
+})
+passport.deserializeUser((user, done) => {
+  done(null, user)
+})
 
 const port = 5000;
 const url = 'mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.net/?retryWrites=true&w=majority';
@@ -33,21 +53,8 @@ app.use('/api/user', authMiddleware, checkRouter);
 app.use('/api/review', jsonParser, reviewRouter);
 app.use('/api/piece', jsonParser, pieceRouter);
 app.use('/api/personal', jsonParser, personalRouter);
-//app.use('/api/comment', commentRouter);
-
-app.get('/api/comment/get-comment', cors(corsOptions), async(req, res) => {
-    emitter.once('newMessage', (comment)=> {
-        res.json(comment)
-    })
-})
-
-app.post('/api/comment/new-comment', cors(corsOptions), async(req, res) => {
-    const {message, userEmail, reviewId} = req.body;
-    const comment = new Comment({message: message, userEmail: userEmail, reviewId: reviewId});
-    await comment.save();
-    emitter.emit('newMessage', {message: message, userEmail: userEmail, reviewId: reviewId}) 
-    res.status(200);
-})
+app.use('/api/comment', jsonParser, commentRouter);
+app.use('/api/github', jsonParser, githubRoutes);
 
 const start = async() => {
     try{
