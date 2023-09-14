@@ -6,17 +6,13 @@ const events = require('events');
 
 const emitter = new events.EventEmitter();
 
-router.get('/get-comment', async(req, res) => {
+router.get('/message', async(req, res) => {
     emitter.once('newMessage', (comment)=> {
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.json(comment)
     })
 })
 
-router.post('/new-comment', async(req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+router.post('/message', async(req, res) => {
     const {message, userEmail, reviewId} = req.body;
     const comment = new Comment({message: message, userEmail: userEmail, reviewId: reviewId});
     await comment.save();
