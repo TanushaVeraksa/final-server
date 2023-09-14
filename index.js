@@ -5,6 +5,7 @@ const checkRouter = require('./routes/check.routes');
 const reviewRouter = require('./routes/review.routes');
 const pieceRouter = require('./routes/piece.routes');
 const personalRouter = require('./routes/personal.routes');
+const adminRoutes = require('./routes/admin.routes');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const cors = require("cors");
@@ -55,6 +56,7 @@ app.use('/api/piece', jsonParser, pieceRouter);
 app.use('/api/personal', jsonParser, personalRouter);
 app.use('/api/comment', jsonParser, commentRouter);
 app.use('/api/github', jsonParser, githubRoutes);
+app.use('/api/admin', jsonParser, adminRoutes);
 
 const start = async() => {
     try{
