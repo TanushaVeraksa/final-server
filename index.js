@@ -6,6 +6,8 @@ const reviewRouter = require('./routes/review.routes');
 const pieceRouter = require('./routes/piece.routes');
 const personalRouter = require('./routes/personal.routes');
 const adminRoutes = require('./routes/admin.routes');
+const tagRoutes = require('./routes/tag.routes');
+const searchRoutes = require('./routes/search.routes');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const cors = require("cors");
@@ -18,32 +20,34 @@ const session = require('express-session');
 
 const app = express();
 
-app.use(
-    cors({
-      origin: "*",
-      methods: "GET,POST",
-      allowedHeaders: "Content-Type,Authorization",
-      credentials: true,
-      preflightContinue: true,
-    })
-  );
+// app.use(
+//     cors({
+//       origin: "*",
+//       methods: "GET,POST",
+//       allowedHeaders: "Content-Type,Authorization",
+//       credentials: true,
+//       preflightContinue: true,
+//     })
+//   );
 
-app.use(
-    session({
-      resave: false,
-      saveUninitialized: true,
-      secret: 'secret',
-    })
-  );
+app.use(cors())
 
-app.use(passport.initialize());
-app.use(passport.session());
-passport.serializeUser((user, done) => {
-  done(null, user)
-})
-passport.deserializeUser((user, done) => {
-  done(null, user)
-})
+// app.use(
+//     session({
+//       resave: false,
+//       saveUninitialized: true,
+//       secret: 'secret',
+//     })
+//   );
+
+// app.use(passport.initialize());
+// app.use(passport.session());
+// passport.serializeUser((user, done) => {
+//   done(null, user)
+// })
+// passport.deserializeUser((user, done) => {
+//   done(null, user)
+// })
 
 const port = 5000;
 const url = 'mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.net/?retryWrites=true&w=majority';
@@ -57,6 +61,8 @@ app.use('/api/personal', jsonParser, personalRouter);
 app.use('/api/comment', jsonParser, commentRouter);
 app.use('/api/github', jsonParser, githubRoutes);
 app.use('/api/admin', jsonParser, adminRoutes);
+app.use('/api/tag', jsonParser, tagRoutes);
+app.use('/api/search', jsonParser, searchRoutes);
 
 const start = async() => {
     try{

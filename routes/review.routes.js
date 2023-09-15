@@ -143,14 +143,4 @@ router.post('/one', async(req, res) => {
     return res.send(review)
 })
 
-router.post('/tags', async(req, res) => {
-    const tags = [];
-    const review = await Review.find({})
-    review.forEach(elem => {
-        tags.push([...elem.tag])
-    })
-    const uniqTags = Array.from(new Set(tags.flat()));
-    return res.send(uniqTags)
-})
-
 module.exports = router;

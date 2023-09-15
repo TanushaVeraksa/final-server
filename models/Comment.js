@@ -6,4 +6,6 @@ const Comment = new Schema({
     reviewId: {type: ObjectId, ref: 'Review'}
 })
 
+Comment.index({'$**': 'text'});
+
 module.exports = model('Comment', Comment);

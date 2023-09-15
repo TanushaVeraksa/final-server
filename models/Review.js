@@ -17,4 +17,6 @@ const Review = new Schema({
     userId: {type: ObjectId, ref: 'User'},
 })
 
+Review.index({'$**': 'text'});
+
 module.exports = model('Review', Review);
