@@ -10,7 +10,7 @@ const GITHUB_CLIENT_SECRET = 'de5907f0aba091d6401f75d7e7fa0eb0fd59354d'
 passport.use(new GitHubStrategy({
     clientID: GITHUB_CLIENT_ID,
     clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "http://localhost:5000/api/github/callback"
+    callbackURL: "https://final-server-lyart.vercel.app/api/github/callback"
   },
   async function(accessToken, refreshToken, profile, done) {
     const user = await User.findOne({
