@@ -18,8 +18,8 @@ router.get('/get-comment', async(req, res) => {
 })
 
 router.post('/new-comment', async(req, res) => {
-    const {message, userEmail, reviewId} = req.body;
-    const comment = new Comment({message: message, userEmail: userEmail, reviewId: reviewId});
+    const {message, userName, reviewId} = req.body;
+    const comment = new Comment({message: message, userName: userName, reviewId: reviewId});
     await comment.save(); 
     return res.send(comment)
 })

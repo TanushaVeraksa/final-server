@@ -1,4 +1,4 @@
-const GitHubStrategy = require('passport-github2').Strategy;
+const GitHubStrategy = require('passport-github').Strategy;
 const Router = require('express');
 const User = require('../models/User');
 const router = new Router();
@@ -12,19 +12,38 @@ passport.use(new GitHubStrategy({
     clientSecret: GITHUB_CLIENT_SECRET,
     callbackURL: "http://localhost:5000/api/github/callback"
   },
-  function(accessToken, refreshToken, profile, done) {
-    //User.findOrCreate({ githubId: profile.id }, function (err, user) {
-        //console.log(profile)
-      return done(null, profile);
-   // });
+  async function(accessToken, refreshToken, profile, done) {
+    const user = await User.findOne({
+        accountId: profile.id,
+        provider: 'github',
+      });
+      if (!user) {
+        console.log('Adding new github user to DB..');
+        const user = new User({
+          accountId: profile.id,
+          name: profile.username,
+          provider: profile.provider,
+        });
+        await user.save();
+        return done(null, profile);
+      } else {
+        console.log('Github user already exist in DB..');
+        return done(null, profile);
+      }
   }
 ));
 
-router.get('/',
-  passport.authenticate('github', { scope: [ 'user:email' ] }));
+passport.serializeUser((user, done) => {
+    done(null, user)
+  })
+  passport.deserializeUser((user, done) => {
+    done(null, user)
+})
 
-  router.get(
-    '/callback',
+
+router.get('/', passport.authenticate('github', { scope: [ 'user:email' ] }));
+
+  router.get('/callback',
     passport.authenticate('github', {
       successRedirect: '/api/github/profile',
       failureRedirect: '/api/github/error'
@@ -33,27 +52,17 @@ router.get('/',
 
 router.get('/error', (req, res) => res.send('Error logging in via Github..'));
 router.get('/profile', (req, res) => {
-    console.log(req.isAuthenticated())
-    res.send('Good')
+   res.cookie('user', req.isAuthenticated())
+   res.redirect('https://final-client-livid.vercel.app/')
 });
 
-router.get('/logout', function(req, res, next) {
-    req.logout(function(err) {
-      res.send('logout')
-      if (err) { return next(err); }
-      //res.redirect('/');
-    });
-  });
-
-  router.get('/signout', (req, res) => {
-    try {
-      req.session.destroy(function (err) {
-        console.log('session destroyed.');
+router.get('/logout', function(req, res, next){
+    res.cookie('user', req.isAuthenticated())
+    req.session.destroy();
+    req.logout(function (err) {
+        console.log(err);
       });
-      res.render('auth');
-    } catch (err) {
-      res.status(400).send({ message: 'Failed to sign out fb user' });
-    }
+    console.log(req.isAuthenticated())
   });
 
 module.exports = router;

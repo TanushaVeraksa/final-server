@@ -2,7 +2,7 @@ const {Schema, model, ObjectId} = require("mongoose");
 
 const Comment = new Schema({
     message: {type: String},
-    userEmail: {type: String, required: true},
+    userName: {type: String, required: true},
     reviewId: {type: ObjectId, ref: 'Review'}
 })
 

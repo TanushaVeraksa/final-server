@@ -14,40 +14,26 @@ const cors = require("cors");
 const authMiddleware = require('./middleware/auth.middleware');
 const commentRouter = require('./routes/comment.routes');
 const passport = require('passport');
-const instagramRoutes = require('./routes/instagram.routes');
 const githubRoutes = require('./routes/github.routes');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
-// app.use(
-//     cors({
-//       origin: "*",
-//       methods: "GET,POST",
-//       allowedHeaders: "Content-Type,Authorization",
-//       credentials: true,
-//       preflightContinue: true,
-//     })
-//   );
+app.use(cors());
 
-app.use(cors())
+app.use(
+    session({
+      resave: true,
+      saveUninitialized: true,
+      secret: 'secret',
+    })
+  );
 
-// app.use(
-//     session({
-//       resave: false,
-//       saveUninitialized: true,
-//       secret: 'secret',
-//     })
-//   );
+app.use(cookieParser())
 
-// app.use(passport.initialize());
-// app.use(passport.session());
-// passport.serializeUser((user, done) => {
-//   done(null, user)
-// })
-// passport.deserializeUser((user, done) => {
-//   done(null, user)
-// })
+app.use(passport.initialize());
+app.use(passport.session());
 
 const port = 5000;
 const url = 'mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.net/?retryWrites=true&w=majority';
