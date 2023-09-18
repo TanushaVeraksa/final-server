@@ -15,6 +15,7 @@ const authMiddleware = require('./middleware/auth.middleware');
 const commentRouter = require('./routes/comment.routes');
 const passport = require('passport');
 const githubRoutes = require('./routes/github.routes');
+const googleRoutes = require('./routes/google.routes');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 
@@ -35,6 +36,13 @@ app.use(cookieParser())
 app.use(passport.initialize());
 app.use(passport.session());
 
+passport.serializeUser((user, done) => {
+    done(null, user)
+  })
+passport.deserializeUser((user, done) => {
+    done(null, user)
+})
+
 const port = 5000;
 const url = 'mongodb+srv://veraksa161:vlu2Otgeq0D7nM2o@cluster0.1lxltk8.mongodb.net/?retryWrites=true&w=majority';
 
@@ -46,6 +54,7 @@ app.use('/api/piece', jsonParser, pieceRouter);
 app.use('/api/personal', jsonParser, personalRouter);
 app.use('/api/comment', jsonParser, commentRouter);
 app.use('/api/github', jsonParser, githubRoutes);
+app.use('/api/google', jsonParser, googleRoutes);
 app.use('/api/admin', jsonParser, adminRoutes);
 app.use('/api/tag', jsonParser, tagRoutes);
 app.use('/api/search', jsonParser, searchRoutes);

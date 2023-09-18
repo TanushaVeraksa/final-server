@@ -1,4 +1,4 @@
-const GitHubStrategy = require('passport-github').Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const Router = require('express');
 const User = require('../models/User');
 const router = new Router();
@@ -7,24 +7,25 @@ const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = 'SEKRET_KEY';
 
-const GITHUB_CLIENT_ID = '437b00572788cd75cfbe';
-const GITHUB_CLIENT_SECRET = 'de5907f0aba091d6401f75d7e7fa0eb0fd59354d'
+const GOOGLE_CLIENT_ID = '8714850263-2iae688e2fn6ul4v1cbalfd7uj4amtk6.apps.googleusercontent.com';
+const GOOGLE_CLIENT_SECRET = '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';
 
-passport.use(new GitHubStrategy({
-    clientID: GITHUB_CLIENT_ID,
-    clientSecret: GITHUB_CLIENT_SECRET,
-    callbackURL: "https://final-server-lyart.vercel.app/api/github/callback"
+passport.use(new GoogleStrategy({
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: "https://final-server-lyart.vercel.app/api/google/callback"
   },
   async function(accessToken, refreshToken, profile, done) {
     const user = await User.findOne({
         accountId: profile.id,
-        provider: 'github',
+        provider: 'google',
       });
       if (!user) {
         console.log('Adding new github user to DB..');
         const user = new User({
           accountId: profile.id,
-          name: profile.username,
+          name: profile.displayName,
+          email: profile.displayName,
           provider: profile.provider,
         });
         await user.save();
@@ -36,14 +37,21 @@ passport.use(new GitHubStrategy({
   }
 ));
 
-router.get('/', passport.authenticate('github', { scope: [ 'user:email' ] }));
+router.get('/', passport.authenticate('google', { scope: ['profile'] }));
 
 router.get('/callback',
-passport.authenticate('github', {
-    successRedirect: '/api/github/profile',
-    failureRedirect: '/api/github/error'
+passport.authenticate('google', {
+    successRedirect: '/api/google/profile',
+    failureRedirect: '/api/google/error'
 })
 );
+
+router.get('/error', (req, res) => res.send('Error logging in via Google..'));
+router.get('/profile', (req, res) => {
+    console.log(req.session.passport.user)
+    res.cookie('user', req.isAuthenticated())
+    res.redirect('https://final-client-livid.vercel.app/')
+});
 
 const generateJwt = (user) => {
     return jwt.sign(
@@ -53,16 +61,10 @@ const generateJwt = (user) => {
  }
 
 router.get('/user', async (req, res) => {
-    const user = await User.find({provider: 'github'}).limit(1).sort({created_at: -1});
-    const token = generateJwt(user[0]);
-    return res.send({token});
- })
-
-router.get('/error', (req, res) => res.send('Error logging in via Github..'));
-router.get('/profile', (req, res) => {
-   res.cookie('user', req.isAuthenticated())
-   res.redirect('https://final-client-livid.vercel.app/')
-});
+   const user = await User.find({provider: 'google'}).limit(1).sort({created_at: -1});
+   const token = generateJwt(user[0]);
+   return res.send({token});
+})
 
 router.get('/logout', function(req, res, next){
     res.cookie('user', req.isAuthenticated())
@@ -71,7 +73,7 @@ router.get('/logout', function(req, res, next){
       });
     req.logout(function (err) {
         console.log(err);
-      });
+    });
 });
 
 module.exports = router;
