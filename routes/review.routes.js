@@ -42,12 +42,12 @@ router.post('/update', async(req, res) => {
 })
 
 router.post('/create', async(req, res) => {
-    const date = new Date();
-    const currentDate = `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`
+    let currentDate = new Date();
+    const formattedDate = currentDate.toISOString().slice(0, 10);
     const {title, piece, group, tag, description, grade, img, publicId, userId} = req.body;
     try {
         const review = new Review(
-            {title, piece, group, tag, description, grade, img, publicId, dateCreation: currentDate, userId});
+            {title, piece, group, tag, description, grade, img, publicId, dateCreation: formattedDate, userId});
         const isPiece = await Piece.findOne({title: piece});
         if(isPiece) {
             await Piece.updateOne({title: piece}, { $push: { reviewId: review._id }})

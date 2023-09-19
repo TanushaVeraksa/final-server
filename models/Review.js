@@ -12,7 +12,7 @@ const Review = new Schema({
     likes: [{type: ObjectId, ref: 'User'}],
     img: {type: String, required: true},
     publicId: {type: String, required: true},
-    dateCreation: {type: String},
+    dateCreation: {type: Date},
     commentId: [{type: ObjectId, ref: 'Comment'}],
     userId: {type: ObjectId, ref: 'User'},
 })
