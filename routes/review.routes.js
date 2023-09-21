@@ -66,6 +66,13 @@ router.post('/create', async(req, res) => {
 
 router.post('/delete', async(req, res) => {
     const {id} = req.body;
+    const review = await Review.findOne({_id: id});
+    const piece = await Piece.findOne({title: review.piece});
+    if(piece.reviewId.length === 1) {
+        await Piece.deleteOne({title: review.piece});
+    } else {
+        await Piece.updateOne({_id: piece._id}, {$pull: { reviewId: id}});
+    }
     await Review.deleteOne({_id: id});
     return res.send({message: 'Review was deleted'})
 })
