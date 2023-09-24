@@ -13,7 +13,7 @@ const GOOGLE_CLIENT_SECRET = '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';
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://final-server-lyart.vercel.app/api/google/callback"
+    callbackURL: "https://final-server-lyart.vercel.app/api/google/callback",
   },
   async function(accessToken, refreshToken, profile, done) {
     const user = await User.findOne({
@@ -21,7 +21,7 @@ passport.use(new GoogleStrategy({
         provider: 'google',
       });
       if (!user) {
-        console.log('Adding new github user to DB..');
+        console.log('Adding new google user to DB..');
         const user = new User({
           accountId: profile.id,
           name: profile.displayName,
@@ -31,7 +31,7 @@ passport.use(new GoogleStrategy({
         await user.save();
         return done(null, profile);
       } else {
-        console.log('Github user already exist in DB..');
+        console.log('Google user already exist in DB..');
         return done(null, profile);
       }
   }
@@ -46,11 +46,27 @@ passport.authenticate('google', {
 })
 );
 
+function parseCookies (request) {
+  const list = {};
+  const cookieHeader = request.headers?.cookie;
+  if (!cookieHeader) return list;
+
+  cookieHeader.split(`;`).forEach(function(cookie) {
+      let [ name, ...rest] = cookie.split(`=`);
+      name = name?.trim();
+      if (!name) return;
+      const value = rest.join(`=`).trim();
+      if (!value) return;
+      list[name] = decodeURIComponent(value);
+  });
+
+  return list;
+}
+
 router.get('/error', (req, res) => res.send('Error logging in via Google..'));
 router.get('/profile', (req, res) => {
-    console.log(req.session.passport.user)
-    res.cookie('user', req.isAuthenticated())
-    res.redirect('https://final-client-livid.vercel.app/')
+  res.cookie('user', req.session.passport.user.id)
+  res.send('You are logged in')
 });
 
 const generateJwt = (user) => {
@@ -61,13 +77,14 @@ const generateJwt = (user) => {
  }
 
 router.get('/user', async (req, res) => {
-   const user = await User.find({provider: 'google'}).limit(1).sort({created_at: -1});
-   const token = generateJwt(user[0]);
-   return res.send({token});
+  const {cookie} = req.query;
+  const user = await User.findOne({accountId: cookie});
+  const token = generateJwt(user);
+  return res.send({token});
 })
 
 router.get('/logout', function(req, res, next){
-    res.cookie('user', req.isAuthenticated())
+    res.clearCookie("user");
     req.session.destroy(function (err) {
         console.log('session destroyed.');
       });

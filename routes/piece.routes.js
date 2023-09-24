@@ -18,8 +18,17 @@ router.get('/reviews', async(req, res) => {
         return res.send(filterReview);
     }catch(e) {
         console.log(e)
-    }
-    
+    } 
+})
+
+router.get('/rating', async(req, res) => {
+    const {id} = req.query;
+    const review = await Review.findOne({_id: id});
+    const pieces = await Review.find({piece: review.piece})
+    const ratingPieces = pieces.map(elem => elem.rating)
+    const currRating = ratingPieces.reduce((acc, curr) => acc+=curr);
+    const avarageRating = currRating/ratingPieces.length;
+    return res.send(avarageRating.toFixed(2))
 })
 
 module.exports = router;
